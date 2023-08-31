@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement style="height: auto;">
+        <ui:TextField picking-mode="Ignore" label="User Name" value="filler text" text="filler text" name="userName" style="flex-grow: 0.5;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="VisualElement" style="height: auto;">
+        <ui:TextField picking-mode="Ignore" label="Password" value="filler text" text="filler text" name="password" password="false" mask-character="*" focusable="true" style="flex-grow: 0.5;" />
+    </ui:VisualElement>
+    <ui:Button text="Sign In" display-tooltip-when-elided="true" name="signIn" style="background-color: rgb(163, 164, 95);" />
+    <ui:VisualElement style="flex-direction: column; height: 70%; border-bottom-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+        <ui:VisualElement name="SoundEffectVE" style="flex-direction: column; height: 50%; border-bottom-width: 1px; border-top-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:Label text="Sound Effect" display-tooltip-when-elided="true" name="SoundEffect" />
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:TextField picking-mode="Ignore" label="Text Field" value="filler text" text="filler text" name="SoundEffect" style="flex-grow: 1;" />
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="submitSoundEffect" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="BGM" style="height: 50%; width: auto; border-left-width: 0; border-right-width: 0; border-top-width: 1px; border-bottom-width: 0; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
+            <ui:Label text="Loop BGM" display-tooltip-when-elided="true" />
+            <ui:VisualElement name="Text" style="height: auto; align-items: stretch; justify-content: flex-start; flex-direction: row; border-top-width: 1px; width: auto;">
+                <ui:TextField picking-mode="Ignore" label="Text Prompt" value="filler text" text="filler text" name="bgmInput" focusable="true" style="flex-grow: 1; -unity-text-outline-width: 0; margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px; align-items: stretch; width: auto; opacity: 1; left: auto; white-space: nowrap; height: auto;" />
+                <ui:Button text="Button" display-tooltip-when-elided="true" name="bgmsubmit" style="flex-grow: 0; height: auto; width: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="Info" />
+</ui:UXML>
