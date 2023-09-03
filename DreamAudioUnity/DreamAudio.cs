@@ -16,8 +16,16 @@ public class DreamAudio : EditorWindow
     private TextField userName;
     private TextField password;
     private TextField bgmInput;
+    private TextField bgmDuration;
     private Button signInButton;
     private Button bgmButton;
+    private Button signUpButton;
+    private Button insta;
+    private Button discord;
+    private Button facebook;
+    private Button ticktok;
+    private Button bilibili;
+    private Button twitter;
     public VisualElement ve;
     public JWTOKEN JWT = new JWTOKEN();
     [MenuItem("Window/UI Toolkit/DreamAudio")]
@@ -39,14 +47,26 @@ public class DreamAudio : EditorWindow
         userName = root.Q<TextField>("userName");
         password = root.Q<TextField>("password");
         bgmInput = root.Q<TextField>("bgmInput");
+        bgmDuration = root.Q<TextField>("duration");
         ve = root.Q<VisualElement>("Info");
         bgmButton = root.Q<Button>("bgmsubmit");
         signInButton = root.Q<Button>("signIn");
+        signUpButton = root.Q<Button>("signUp");
+        insta = root.Q<Button>("Insta");
+        discord = root.Q<Button>("Discord");
+        facebook = root.Q<Button>("Facebook");
+        ticktok = root.Q<Button>("TikTok");
+        bilibili = root.Q<Button>("Bili");
+        twitter = root.Q<Button>("Twitter");
         signInButton.clicked += JWTSignIn;
         bgmButton.clicked += BGMGenerate;
-        
-
-
+        signUpButton.clicked += signUp;
+        insta.clicked += instagram;
+        discord.clicked += disc;
+        facebook.clicked += faceb;
+        ticktok.clicked += tik;
+        bilibili.clicked += bili;
+        twitter.clicked += twitt;
     }
 
     private async void BGMGenerate()
@@ -55,7 +75,9 @@ public class DreamAudio : EditorWindow
         string api_str = "http://203.132.92.92:46336/music/generate";
         BGMPrompt bGMPrompt = new BGMPrompt();
         bGMPrompt.descriptions = bgmInput.text;
-        string file_name = bgmInput.text + ".wav";
+        bGMPrompt.duration = Int32.Parse(bgmDuration.text);
+
+        string file_name = bgmInput.text.Substring(0, 10) + ".wav";
         Directory.CreateDirectory(Application.streamingAssetsPath);
         var savePath = Path.Combine(Application.streamingAssetsPath, file_name);
         var helpbox = new HelpBox("", HelpBoxMessageType.None);
@@ -66,8 +88,7 @@ public class DreamAudio : EditorWindow
             Debug.Log(JWT.access_token);
             if (JWT.access_token == null)
             {
-                helpbox = new HelpBox("Authorization Failed, Please Sign In", HelpBoxMessageType.Warning);
-                ve.Add(helpbox);
+                AddHelpBox(ve, "Authorization Failed, Please Sign In", "Warning");
             }
             else
             {
@@ -76,31 +97,53 @@ public class DreamAudio : EditorWindow
 
                 var postData = JsonUtility.ToJson(bGMPrompt);
                 var contentData = new StringContent(postData, Encoding.UTF8, "application/json");
-                helpbox = new HelpBox("Started Downloading", HelpBoxMessageType.Info);
-                ve.Add(helpbox);
+                Debug.Log(postData);
+                Debug.Log(contentData);
+                AddHelpBox(ve, "Downloading", "Info"); 
                 var response = await httpClient.PostAsync(api_str, contentData);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    using (var fs = new FileStream(savePath, FileMode.CreateNew))
+                    try
                     {
-
-                        await response.Content.CopyToAsync(fs);
-                        helpbox = new HelpBox("Download Finished", HelpBoxMessageType.Info);
-                        ve.Add(helpbox);
+                        using (var fs = new FileStream(savePath, FileMode.CreateNew))
+                        {
+                        Debug.Log(fs);
+                        
+                            await response.Content.CopyToAsync(fs);
+                            AddHelpBox(ve, "Download Finished", "Info");
+                        }
+                       
+                    }
+                    catch (Exception e)
+                    {
+                        AddHelpBox(ve, e.Message, "Warning");
                     }
                 }
                 else
                 {
-                    helpbox = new HelpBox(response.ReasonPhrase, HelpBoxMessageType.Warning);
-                    ve.Add(helpbox);
+                    AddHelpBox(ve, response.ReasonPhrase, "Warning");
                 }
             }
 
         }
 
     }
-
+    private void AddHelpBox(VisualElement ve, string message, string type)
+    {
+        if (type == "Info") {
+            ve.Clear();
+            var helpBox = new HelpBox(message, HelpBoxMessageType.Info);
+            ve.Add(helpBox);
+        }
+        else if (type == "Warning")
+        {
+            ve.Clear();
+            var helpBox = new HelpBox(message, HelpBoxMessageType.Warning);
+            ve.Add(helpBox);
+        }
+        
+    }
     private async void JWTSignIn()
     {
         
@@ -118,27 +161,66 @@ public class DreamAudio : EditorWindow
             var response = await httpClient.PostAsync(api_str, httpContent);
             if (!response.IsSuccessStatusCode)
             {
-                var helpbox = new HelpBox(response.ReasonPhrase, HelpBoxMessageType.Warning);
-                Debug.Log(helpbox);
+                AddHelpBox(ve, response.ReasonPhrase, "Warning");
                 Debug.Log(response.ReasonPhrase);
                 Debug.Log(ve);
-                ve.Add(helpbox);
+                ve.Add(new Label("Authorization Failed, Please Sign Up If Haven't"));
             }
             else
             {
-                var helpbox = new HelpBox("Signed In Successfully", HelpBoxMessageType.Info);
-                Debug.Log(helpbox);
-                Debug.Log(response.Content);
-                Debug.Log("JWT" + JWT.access_token);
-                Debug.Log(response.Content);
-                string responseContent = await response.Content.ReadAsStringAsync();
-                JWT.access_token = JsonUtility.FromJson<JWTOKEN>(responseContent).access_token;
-                Debug.Log(JWT.access_token);
-                ve.Add(helpbox);
+                try
+                {
+                    Debug.Log(response.Content);
+                    Debug.Log("JWT" + JWT.access_token);
+                    Debug.Log(response.Content);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    JWT.access_token = JsonUtility.FromJson<JWTOKEN>(responseContent).access_token;
+                    Debug.Log(JWT.access_token);
+                    AddHelpBox(ve, "Signed In Successfully", "Info");
+                }
+                catch (Exception e)
+                {
+                    AddHelpBox(ve, e.Message, "Warning");
+                }
+                
             }
         }
     }
-}public class LoginPackage
+    private void signUp()
+    {
+        OpenURL("www.youtube.com");
+    }
+    private void instagram()
+    {
+        OpenURL("https://www.instagram.com/");
+    }
+    private void disc()
+    {
+        OpenURL("https://discord.com/");
+    }
+    private void faceb()
+    {
+        OpenURL("https://www.facebook.com/");
+    }
+    private void tik()
+    {
+        OpenURL("https://www.tiktok.com/");
+    }
+    private void twitt()
+    {
+        OpenURL("https://www.twitter.com/");
+    }
+    private void bili()
+    {
+        OpenURL("https://www.bilibili.com/");
+    }
+    private void OpenURL(string link)
+    {
+        Application.OpenURL(link);
+    }
+}
+
+public class LoginPackage
 {
     public string email;
     public string password;
@@ -150,4 +232,5 @@ public class JWTOKEN
 public class BGMPrompt
 {
     public string descriptions;
+    public int duration;
 }
